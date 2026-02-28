@@ -19,4 +19,5 @@ module "vpc" {
   public_cidr_block  = var.public_cidr_block
   private_cidr_block = var.private_cidr_block
   availability_zone  = var.availability_zone
+  db_cidr_block      = var.db_cidr_block
 }
