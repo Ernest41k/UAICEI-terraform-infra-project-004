@@ -56,3 +56,24 @@ tags = merge(var.tags, {
     Name = "${var.tags["project"]}-${var.tags["application"]}-${var.tags["environment"]}-private-subnet-az-2b"
   })
 }
+
+# CREATING DB SUBNETS-----------------------------------------------------------------------------
+resource "aws_subnet" "db_subnet_az_2a" {
+  vpc_id     = aws_vpc.main_vpc.id
+  cidr_block = var.db_cidr_block[0]
+  availability_zone = var.availability_zone[0]
+
+tags = merge(var.tags, {
+    Name = "${var.tags["project"]}-${var.tags["application"]}-${var.tags["environment"]}-db-subnet-az-2a"
+  })
+}
+
+resource "aws_subnet" "db_subnet_az_2b" {
+  vpc_id     = aws_vpc.main_vpc.id
+  cidr_block = var.db_cidr_block[1]
+  availability_zone = var.availability_zone[1]
+
+tags = merge(var.tags, {
+    Name = "${var.tags["project"]}-${var.tags["application"]}-${var.tags["environment"]}-db-subnet-az-2b"
+  })
+}
