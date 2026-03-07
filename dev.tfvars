@@ -6,3 +6,6 @@ availability_zone  = ["us-east-2a", "us-east-2b"]
 ami_id             = "ami-09256c524fab91d36"
 instance_type      = "t3.micro"
 key_name           = "PRIVATE-KEYS"
+max_size           = 6
+min_size           = 2
+desired_capacity   = 4
