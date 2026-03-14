@@ -70,5 +70,26 @@ resource "aws_db_instance_role_association" "rds_secrets_manager_role" {
   feature_name           = "secretsManager"
   role_arn               = var.rds_secrets_manager_role
 
+  depends_on = [null_resource.wait_for_rds]
+
+  lifecycle {
+    # Prevent Terraform from trying to destroy/recreate this association unless role_arn changes
+    ignore_changes = [
+      db_instance_identifier
+    ]
+    create_before_destroy = false
+  }
+}
+
+resource "null_resource" "wait_for_rds" {
   depends_on = [aws_db_instance.rds_mysql]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      until aws rds describe-db-instances --db-instance-identifier ${aws_db_instance.rds_mysql.id} --query "DBInstances[0].DBInstanceStatus" --output text | grep available; do
+        echo "Waiting for RDS to be available..."
+        sleep 15
+      done
+    EOT
+  }
 }
