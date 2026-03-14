@@ -1,28 +1,47 @@
-name: Terraform Destroy Pipeline
+name: Terraform Force Unlock
 
 on:
   workflow_dispatch:
 
-jobs:
-  terraform-destroy:
-    runs-on: ubuntu-latest
+permissions:
+  contents: read
+  id-token: write
 
-    env:
-      TF_LOCK_ID: 1d3a113f-a0fe-5313-063a-584cbf1b63b2
+jobs:
+  unlock:
+    runs-on: ubuntu-latest
+    environment: development
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
-      - name: Checkout Repo
+      # 1️⃣ Checkout repo
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      # 3️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # 4️⃣ Terraform Init (required to access backend)
       - name: Terraform Init
         run: terraform init -input=false
 
-      - name: Force Unlock
-        run: |
-          terraform force-unlock -force $TF_LOCK_ID || echo "No lock present"
+      # 5️⃣ Select workspace
+      - name: Select Workspace
+        run: terraform workspace select -or-create dev
 
-      - name: Terraform Plan Destroy
-        run: terraform plan -destroy -var-file=dev.tfvars -input=false
+      # 6️⃣ Force unlock state
+      - name: Force Unlock Terraform State
+        run: |
+          terraform force-unlock -force 1d3a113f-a0fe-5313-063a-584cbf1b63b2
