@@ -1,35 +1,28 @@
 name: Terraform Destroy Pipeline
 
 on:
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   terraform-destroy:
     runs-on: ubuntu-latest
 
     env:
-      TF_BACKEND_LOCK_ID: "1d3a113f-a0fe-5313-063a-584cbf1b63b2" # Replace with your actual lock ID
-      TF_WORKING_DIR: ./terraform
+      TF_LOCK_ID: 1d3a113f-a0fe-5313-063a-584cbf1b63b2
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.14.7
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
-        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform init -input=false
 
-      - name: Force Unlock Terraform State (if locked)
-        working-directory: ${{ env.TF_WORKING_DIR }}
+      - name: Force Unlock
         run: |
-          echo "Forcing Terraform state unlock..."
-          terraform force-unlock -force $TF_BACKEND_LOCK_ID || echo "No existing lock found"
+          terraform force-unlock -force $TF_LOCK_ID || echo "No lock present"
 
       - name: Terraform Plan Destroy
-        working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform plan -destroy -var-file=dev.tfvars -input=false
