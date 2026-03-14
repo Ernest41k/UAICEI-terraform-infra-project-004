@@ -50,8 +50,8 @@ resource "aws_db_instance" "rds_mysql" {
   engine               = var.engine
   engine_version       = var.engine_version
   instance_class       = var.instance_class
-  username             = jsonencode(data.aws_secretsmanager_secret_version.db_password_version.secret_string)["mysql_username"]
-  password             = jsonencode(data.aws_secretsmanager_secret_version.db_password_version.secret_string)["mysql_password"]
+  username             = jsondecode(data.aws_secretsmanager_secret_version.db_password_version.secret_string)["mysql_username"]
+  password             = jsondecode(data.aws_secretsmanager_secret_version.db_password_version.secret_string)["mysql_password"]
   parameter_group_name = var.parameter_group_name
   skip_final_snapshot  = true
   multi_az = true
