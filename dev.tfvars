@@ -9,3 +9,7 @@ key_name           = "PRIVATE-KEYS"
 max_size           = 6
 min_size           = 2
 desired_capacity   = 4
+ssl_policy         = "ELBSecurityPolicy-TLS13-1-2-Res-PQ-2025-09"
+certificate_arn    = "arn:aws:acm:us-east-2:450665609241:certificate/5857f5b7-9b00-401f-8777-a6183f5c1843"
+route53_zone_id    = "Z03012591QFYLYIDNYNJ1"
+name               = "jupiterclassicwatch.com"
