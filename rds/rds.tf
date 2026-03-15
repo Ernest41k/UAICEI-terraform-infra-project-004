@@ -7,7 +7,7 @@ tags = merge(var.tags, {
   })
 }
 
-# CREATING RDS SECURITY GROUP ------------------------------------------------------------------
+# CREATING RDS SECURITY GROUP -------------------------------------------------------------------
 resource "aws_security_group" "rds_sg" {
   name        = "rds-sg"
   description = "Allow DB Traffic"
