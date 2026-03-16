@@ -65,11 +65,3 @@ resource "aws_db_instance" "rds_mysql" {
     Name = "${var.tags["project"]}-${var.tags["application"]}-${var.tags["environment"]}-rds-mysql"
   })
 }
-
-resource "aws_db_instance_role_association" "rds_secrets_manager_role" {
-  db_instance_identifier = aws_db_instance.rds_mysql.identifier
-  feature_name           = "secretsManager"
-  role_arn               = var.rds_secrets_manager_role
-
-  depends_on = [aws_db_instance.rds_mysql]
-}
